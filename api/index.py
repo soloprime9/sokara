@@ -15,10 +15,6 @@ client = genai.Client(api_key="AIzaSyDwduC5DYRNBlGCwbTofvPfXUHSl3gORZY")
 
 
 
-urls = []
-
-scraped = []
-
 def cleaning_data(text):
     text = re.sub(r'\s+', ' ', text)  # Remove extra spaces & newlines
     text = re.sub(r'[^a-zA-Z0-9.,!? ]+', '', text)  # Remove special characters
@@ -37,6 +33,9 @@ def search():
             results = ddgs.text(query, region="wt-wt", safesearch="moderate", timelimit="y")
 
             Request_List = []
+            urls = []
+
+            scraped = []
     # Print results
         for result in results:
             # print(f"Title: {result['title']}")
