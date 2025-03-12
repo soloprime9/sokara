@@ -4,8 +4,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from bs4 import BeautifulSoup
 import re
-from google import genai
-
+from google.generativeai import genai
 app = Flask(__name__)
 
 CORS(app, origins=["https://search-beta-six.vercel.app"])
