@@ -85,7 +85,7 @@ def search():
         for i,url in enumerate(urls[:4]):
 
             
-            response = requests.get(url,headers=headers, verify=False )
+            response = requests.get(url,headers=headers, verify=True )
             # print(url);
             soup = BeautifulSoup(response.text, "lxml")
             for script in soup(["script", "style"]):
