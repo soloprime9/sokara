@@ -25,18 +25,18 @@ client = genai.Client(api_key="AIzaSyDwduC5DYRNBlGCwbTofvPfXUHSl3gORZY")
 def search():
         # Initialize DDGS
         query = request.args.get('q')
-        print("This is query dear : ", query)
+        # print("This is query dear : ", query)
 
-        QueryQuestions = client.models.generate_content(
-             model= 'gemini-2.0-flash',
-             contents=f"Generate exactly 10 short questions about {query} in JSON format. "
-             "Output example: {{'questions': ['What is X?', 'How does X work?', ...]}}"
-        )
+        # QueryQuestions = client.models.generate_content(
+        #      model= 'gemini-2.0-flash',
+        #      contents=f"Generate exactly 10 short questions about {query} in JSON format. "
+        #      "Output example: {{'questions': ['What is X?', 'How does X work?', ...]}}"
+        # )
            
              
 
     
-        # print("Search Queryies: ", QueryQuestions.text);
+        # # print("Search Queryies: ", QueryQuestions.text);
 
 
 
@@ -197,7 +197,7 @@ def search():
         else:
              response = client.models.generate_content(
                   model="gemini-2.0-flash",
-                  contents=f"Provide a detailed explanation answer of : {query} and if not available answer so you can take data from latest {scraped} data and give the perfect and latest satisfied answer with well structured, adding headings,subheadings,papragraphs,poinst,list,bold to attract the user and also add url link at last of the content for which content from where comes"
+                  contents=f"Provide a detailed explanation answer of : {query} and if not available answer so you can take data from latest {scraped} data and give the perfect and latest satisfied answer with well structured, adding headings,subheadings,papragraphs,poinst,list,bold to attract the user and also add url link at last of the content for which content from where comes in 100 words"
 
 
        
