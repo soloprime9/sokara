@@ -196,21 +196,20 @@ def search():
         
         else:
              response = client.models.generate_content(
-                  model="gemini-2.0-flash",
-                  contents=f"Provide a detailed and well-structured explanation for the query: {query}. If the latest and accurate information is available through the Gemini API, present the response directly. If not, fetch data from the latest {scraped} source, summarize it effectively, and provide a complete, accurate, and user-satisfying answer.
-Ensure the response includes:
+    model="gemini-2.0-flash",
+    contents=f"""
+    Provide a detailed and well-structured explanation for the query: "{query}".  
+    If the latest and accurate information is available through the Gemini API, present the response directly.  
+    If not, fetch data from the latest "{scraped}" source, summarize it effectively, and provide a complete, accurate, and user-satisfying answer.  
 
-Headings and subheadings for better readability.
+    Ensure the response includes:  
+    - **Headings and subheadings** for better readability.  
+    - **Paragraphs, bullet points, and lists** for structured information.  
+    - **Bold text** to highlight key points.  
+    - **Relevant URL links** at the end to cite sources.  
+    """
+)
 
-Paragraphs, bullet points, and lists for structured information.
-
-Bold text to highlight key points.
-
-Relevant URL links at the end to cite sources."
-
-
-       
-             )
              
              # print("Scraped Data AI Written Update: ", response.text);
           #    print("Scrap Data AI: ", response.text);
