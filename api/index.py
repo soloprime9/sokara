@@ -208,11 +208,12 @@ def search():
     - Mention **all sources** if data is from multiple websites.  
 
     Format for sources:  
+
     <h5><b>Sources:</b></h5>  
-    <ul>
-      <li><a href="{{url1}}" target="_blank" style="color: blue; font-weight: bold;">{{domain1}}</a></li>
-      <li><a href="{{url2}}" target="_blank" style="color: blue; font-weight: bold;">{{domain2}}</a></li>
-      <li><a href="{{url3}}" target="_blank" style="color: blue; font-weight: bold;">{{domain3}}</a></li>
+    <ul style="list-style-type: disc; padding-left: 20px;">
+      <li><b><a href="{{url1}}" target="_blank" style="color: blue; text-decoration: none;">{{domain1}}</a></b></li>
+      <li><b><a href="{{url2}}" target="_blank" style="color: blue; text-decoration: none;">{{domain2}}</a></b></li>
+      <li><b><a href="{{url3}}" target="_blank" style="color: blue; text-decoration: none;">{{domain3}}</a></b></li>
     </ul>
     """
 )
