@@ -196,27 +196,28 @@ def search():
         
         else:
              response = client.models.generate_content(
-    model="gemini-2.0-flash",
-    contents=f"""
-    Provide a **concise and well-structured** answer for: "{query}" (max 150 words).  
-    Use **Gemini API** if available; otherwise, summarize the latest **{scraped}** data.  
+                model="gemini-2.0-flash",
+                contents=f"""
+                Provide a **concise and well-structured** answer for: "{query}" (max 150 words).  
+                Use **Gemini API** if available; otherwise, summarize the latest **{scraped}** data.  
+            
+                Include:  
+                - **Headings & bullet points** for clarity.  
+                - **Bold text** for key points.  
+                - **Avoid any source links in the main content.**  
+                - Mention **all sources** only under the "Sources" section.  
+            
+                Format for sources:  
+            
+                <h5><b>Sources:</b></h5>  
+                <ul style="list-style-type: disc; padding-left: 20px;">
+                  <li><b><a href="{{url1}}" target="_blank" style="color: blue; text-decoration: none;">{{domain1}}</a></b></li>
+                  <li><b><a href="{{url2}}" target="_blank" style="color: blue; text-decoration: none;">{{domain2}}</a></b></li>
+                  <li><b><a href="{{url3}}" target="_blank" style="color: blue; text-decoration: none;">{{domain3}}</a></b></li>
+                </ul>
+                """
+            )
 
-    Include:  
-    - **Headings & bullet points** for clarity.  
-    - **Bold text** for key points.  
-    - **Clickable source links** for reference.  
-    - Mention **all sources** if data is from multiple websites.  
-
-    Format for sources:  
-
-    <h5><b>Sources:</b></h5>  
-    <ul style="list-style-type: disc; padding-left: 20px;">
-      <li><b><a href="{{url1}}" target="_blank" style="color: blue; text-decoration: none;">{{domain1}}</a></b></li>
-      <li><b><a href="{{url2}}" target="_blank" style="color: blue; text-decoration: none;">{{domain2}}</a></b></li>
-      <li><b><a href="{{url3}}" target="_blank" style="color: blue; text-decoration: none;">{{domain3}}</a></b></li>
-    </ul>
-    """
-)
 
 
 
