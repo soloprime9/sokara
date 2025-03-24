@@ -198,17 +198,17 @@ def search():
              response = client.models.generate_content(
     model="gemini-2.0-flash",
     contents=f"""
-    Provide a detailed answer for: "{query}".  
-    If available, use Gemini API data.  
-    If not, summarize the latest "{scraped}" data.  
+    Provide a **brief and well-structured** answer for: "{query}" (max 150 words).  
+    Use **Gemini API** if data is available; otherwise, summarize the latest **{scraped}** data.  
 
     Include:  
     - **Headings & bullet points** for clarity.  
-    - **Bold text** for key info.  
-    - **Source link** with domain for reference.  
-    Example: [Source: example.com](https://example.com)
+    - **Bold text** for key points.  
+    - **Source link** in proper HTML format:  
+      Source: <a href="{{url}}">{{domain}}</a>
     """
 )
+
 
 
              
