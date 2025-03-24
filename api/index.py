@@ -198,17 +198,18 @@ def search():
              response = client.models.generate_content(
     model="gemini-2.0-flash",
     contents=f"""
-    Provide a detailed and well-structured explanation for the query: "{query}".  
-    If the latest and accurate information is available through the Gemini API, present the response directly.  
-    If not, fetch data from the latest "{scraped}" source, summarize it effectively, and provide a complete, accurate, and user-satisfying answer.  
+    Provide a detailed answer for: "{query}".  
+    If available, use Gemini API data.  
+    If not, summarize the latest "{scraped}" data.  
 
-    Ensure the response includes:  
-    - **Headings and subheadings** for better readability.  
-    - **Paragraphs, bullet points, and lists** for structured information.  
-    - **Bold text** to highlight key points.  
-    - **Relevant URL links** at the end to cite sources.  
+    Include:  
+    - **Headings & bullet points** for clarity.  
+    - **Bold text** for key info.  
+    - **Source link** with domain for reference.  
+    Example: [Source: example.com](https://example.com)
     """
 )
+
 
              
              # print("Scraped Data AI Written Update: ", response.text);
