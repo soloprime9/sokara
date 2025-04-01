@@ -9,7 +9,7 @@ from google import genai
 app = Flask(__name__)
 
 
-CORS(app, origins=["https://search-beta-six.vercel.app"])
+CORS(app, origins=["https://www.fondpeace.com"])
 
 client = genai.Client(api_key="AIzaSyDwduC5DYRNBlGCwbTofvPfXUHSl3gORZY")
 
