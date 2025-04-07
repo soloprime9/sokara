@@ -9,7 +9,7 @@ from google import genai
 app = Flask(__name__)
 
 
-CORS(app, origins=["http://localhost:3001"])
+CORS(app, origins=["https://www.fondpeace.com"])
 
 client = genai.Client(api_key="AIzaSyDwduC5DYRNBlGCwbTofvPfXUHSl3gORZY")
 
@@ -195,11 +195,13 @@ def search():
         #   #    print("Explaination: ", response.text)
         
         else:
-             response = client.models.generate_content(
+             
+            try:
+                response = client.models.generate_content(
                 model="gemini-2.0-flash",
                 contents=f"""
-                Provide a **concise and well-structured** answer for: "{query}" (max 150 words).  
-                Use **Gemini API** if available; otherwise, summarize the latest **{scraped}** data.  
+                Provide a **concise and well-structured** answer for: "{query}" (max 200 words).  
+                Use **Gemini AI** if available; otherwise, summarize the latest **{scraped}** data.  
             
                 Include:  
                 - **Headings & bullet points** for clarity.  
@@ -218,6 +220,10 @@ def search():
                 """
             )
 
+            except Exception as e:
+                response = None
+            
+
 
 
 
@@ -225,8 +231,11 @@ def search():
              
              # print("Scraped Data AI Written Update: ", response.text);
           #    print("Scrap Data AI: ", response.text);
-            
+        
         # print(urls)  
+
+        
+        
         return jsonify(Request_List, response.text, images);
 
         
