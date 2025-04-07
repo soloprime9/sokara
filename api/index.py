@@ -82,8 +82,8 @@ def search():
             }
 
 
-        # for i,url in enumerate(urls[:4]):
-        for i, url in urls:
+        for i,url in enumerate(urls[:8]):
+        
 
             
             response = requests.get(url,headers=headers, verify=True )
