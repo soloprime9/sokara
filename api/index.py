@@ -211,7 +211,7 @@ def search():
             
                 Format for sources:  
             
-                <h5><b>Sources:</b></h5>  
+                <b>Sources:</b> 
                 <ul style="list-style-type: disc; padding-left: 20px;">
                   <li><b><a href="{{url1}}" target="_blank" style="color: blue; text-decoration: none;">{{domain1}}</a></b></li>
                   <li><b><a href="{{url2}}" target="_blank" style="color: blue; text-decoration: none;">{{domain2}}</a></b></li>
