@@ -237,7 +237,7 @@ def search():
 
         
         
-        return jsonify(Request_List, response.text, images);
+        return jsonify(Request_List, images);
 
         
 if __name__ == '__main__':
