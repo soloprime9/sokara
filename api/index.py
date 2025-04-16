@@ -151,78 +151,78 @@ def search():
         
 
 
-      #   if  'create image' in query.lower() or 'generate image' in query.lower():
+        if  'create image' in query.lower() or 'generate image' in query.lower():
+             response = client.models.generate_content(
+                  model="gemini-2.0-flash",
+                 contents=f"Generate a high-quality image based on this prompt: {query}. "
+                     "Ensure it is detailed, visually appealing, and matches the description accurately."
+             )
+             
+             # print("Image URL: ", response.text);
+          #    jsonify("Image URL: ", response.text)
+        
+      #   elif "code" in query.lower() or "create code for" in query.lower() or "generate code" in query.lower():
+             
       #        response = client.models.generate_content(
-      #             model="gemini-2.0-flash",
-      #            contents=f"Generate a high-quality image based on this prompt: {query}. "
-      #                "Ensure it is detailed, visually appealing, and matches the description accurately."
-      #        )
-             
-      #        # print("Image URL: ", response.text);
-      #     #    jsonify("Image URL: ", response.text)
-        
-      # #   elif "code" in query.lower() or "create code for" in query.lower() or "generate code" in query.lower():
-             
-      # #        response = client.models.generate_content(
-      # #        model="gemini-2.0-flash",
-      # #        contents=f"Write a well-commented, optimized code snippet for: {query}. "
-      # #                "Ensure the code is efficient, uses best practices, and is properly structured. "
-      # #                "Use proper indentation, function-based approach, and security best practices."
-      # # ) 
-      # #        # print("Code Genrated: ",response.text)
-      # #     #    jsonify("Code Genrated: ", response.text)
+      #        model="gemini-2.0-flash",
+      #        contents=f"Write a well-commented, optimized code snippet for: {query}. "
+      #                "Ensure the code is efficient, uses best practices, and is properly structured. "
+      #                "Use proper indentation, function-based approach, and security best practices."
+      # ) 
+      #        # print("Code Genrated: ",response.text)
+      #     #    jsonify("Code Genrated: ", response.text)
         
         
-      # #   elif "resume" in query.lower():
-      # #       response = client.models.generate_content(
-      # #            model="gemini-2.0-flash",
-      # #            contents=f"Create a modern, well-structured resume tailored for {query}. "
-      # #                "Include an engaging summary, skills, experience, education, and achievements. "
-      # #                "Ensure ATS (Applicant Tracking System) optimization with professional formatting."
+      #   elif "resume" in query.lower():
+      #       response = client.models.generate_content(
+      #            model="gemini-2.0-flash",
+      #            contents=f"Create a modern, well-structured resume tailored for {query}. "
+      #                "Include an engaging summary, skills, experience, education, and achievements. "
+      #                "Ensure ATS (Applicant Tracking System) optimization with professional formatting."
        
-      # #       )
-      # #       # print("Resume: ", response.text)
-      # #     #   jsonify("Resume: ", response.text);
-        
-      #   # elif "define" in query.lower() or "explain" in query.lower() or "latest" in query.lower():
-      #   #      response = client.models.generate_content(
-      #   #           model='gemini-2.0-flash',
-      #   #           contents=f"Provide a clear, well-explained, and factually correct answer for: {query}. "
-      #   #              "Include structured paragraphs, headings, bullet points, and references to latest updates. "
-      #   #              "If the topic requires up-to-date information, fetch the latest web results."
-       
-      #   #      )
-      #   #      # print("Explaination: ", response.text)
-      #   #   #    print("Explaination: ", response.text)
-        
-      #   else:
-             
-      #       try:
-      #           response = client.models.generate_content(
-      #           model="gemini-2.0-flash",
-      #           contents=f"""
-      #           Provide a **concise and well-structured** answer for: "{query}" (max 200 words).  
-      #           Use **Gemini AI** if available; otherwise, summarize the latest **{scraped}** data.  
-            
-      #           Include:  
-      #           - **Headings & bullet points** for clarity.  
-      #           - **Bold text** for key points.  
-      #           - **Avoid any source links in the main content.**  
-      #           - Mention **all sources** only under the "Sources" section.  
-            
-      #           Format for sources:  
-            
-      #           <b>Sources:</b> 
-      #           <ul style="list-style-type: disc; padding-left: 20px;">
-      #             <li><b><a href="{{url1}}" target="_blank" style="color: blue; text-decoration: none;">{{domain1}}</a></b></li>
-      #             <li><b><a href="{{url2}}" target="_blank" style="color: blue; text-decoration: none;">{{domain2}}</a></b></li>
-      #             <li><b><a href="{{url3}}" target="_blank" style="color: blue; text-decoration: none;">{{domain3}}</a></b></li>
-      #           </ul>
-      #           """
       #       )
+      #       # print("Resume: ", response.text)
+      #     #   jsonify("Resume: ", response.text);
+        
+        # elif "define" in query.lower() or "explain" in query.lower() or "latest" in query.lower():
+        #      response = client.models.generate_content(
+        #           model='gemini-2.0-flash',
+        #           contents=f"Provide a clear, well-explained, and factually correct answer for: {query}. "
+        #              "Include structured paragraphs, headings, bullet points, and references to latest updates. "
+        #              "If the topic requires up-to-date information, fetch the latest web results."
+       
+        #      )
+        #      # print("Explaination: ", response.text)
+        #   #    print("Explaination: ", response.text)
+        
+        else:
+             
+            try:
+                response = client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=f"""
+                Provide a **concise and well-structured** answer for: "{query}" (max 200 words).  
+                Use **Gemini AI** if available; otherwise, summarize the latest **{scraped}** data.  
+            
+                Include:  
+                - **Headings & bullet points** for clarity.  
+                - **Bold text** for key points.  
+                - **Avoid any source links in the main content.**  
+                - Mention **all sources** only under the "Sources" section.  
+            
+                Format for sources:  
+            
+                <b>Sources:</b> 
+                <ul style="list-style-type: disc; padding-left: 20px;">
+                  <li><b><a href="{{url1}}" target="_blank" style="color: blue; text-decoration: none;">{{domain1}}</a></b></li>
+                  <li><b><a href="{{url2}}" target="_blank" style="color: blue; text-decoration: none;">{{domain2}}</a></b></li>
+                  <li><b><a href="{{url3}}" target="_blank" style="color: blue; text-decoration: none;">{{domain3}}</a></b></li>
+                </ul>
+                """
+            )
 
-      #       except Exception as e:
-      #           response = None
+            except Exception as e:
+                response = None
             
 
 
@@ -237,7 +237,7 @@ def search():
 
         
         
-        return jsonify(Request_List, images);
+        return jsonify(Request_List, response.text, images);
 
         
 if __name__ == '__main__':
