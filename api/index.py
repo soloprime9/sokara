@@ -1,14 +1,32 @@
-from duckduckgo_search import DDGS
+import time
 import requests
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from duckduckgo_search import DDGS
 from bs4 import BeautifulSoup
-import re
 from urllib.parse import urljoin
-import time
+import re
 
 app = Flask(__name__)
 CORS(app, origins=["https://www.fondpeace.com"])
+
+# Function to handle search with retries
+def search_with_retries(query, retries=3, delay=5):
+    attempt = 0
+    while attempt < retries:
+        try:
+            with DDGS() as ddgs:
+                results = ddgs.text(query, region="wt-wt", safesearch="moderate", timelimit="y")
+                return results
+        except Exception as e:
+            print(f"Error during search: {e}")
+            attempt += 1
+            if attempt < retries:
+                print(f"Retrying in {delay} seconds...")
+                time.sleep(delay)
+            else:
+                return None
+    return None
 
 @app.route("/search", methods=['GET'])
 def search():
@@ -26,19 +44,19 @@ def search():
     images = []
 
     try:
-        # Initialize DDGS
-        with DDGS() as ddgs:
-            results = ddgs.text(query, region="wt-wt", safesearch="moderate", timelimit="y")
+        # Search using DuckDuckGo with retries
+        results = search_with_retries(query)
+        if not results:
+            return jsonify({"error": "Failed to get results after multiple attempts"}), 500
 
-            # Collect search result data
-            for result in results:
-                Request_List.append({
-                    "title": result['title'],
-                    "url": result['href'],
-                    "snippet": result['body']
-                })
-                urls.append(result["href"])
-                time.sleep(1)
+        # Collect search result data
+        for result in results:
+            Request_List.append({
+                "title": result['title'],
+                "url": result['href'],
+                "snippet": result['body']
+            })
+            urls.append(result["href"])
 
         urls = list(set(urls))  # Remove duplicate URLs
 
