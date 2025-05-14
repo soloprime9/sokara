@@ -40,75 +40,121 @@ def search():
 
 
 
-        with DDGS() as ddgs:
-        # Perform a text search
-            results = ddgs.text(query, region="wt-wt", safesearch="moderate", timelimit="y")
+        # with DDGS() as ddgs:
+        # # Perform a text search
+        #     results = ddgs.text(query, region="wt-wt", safesearch="moderate", timelimit="y")
 
 
 
-            Request_List = []
+           
+    # Print results
+
+    with DDGS() as ddgs:
+        results = ddgs.text(query, region="wt-wt", safesearch="moderate", timelimit="y")
+
+         Request_List = []
             urls = []
             images = []
             scraped = []
             pure_scraped = []
-    # Print results
+        
         for result in results:
-            # print(f"Title: {result['title']}")
-            # print(f"URL: {result['href']}")
-            # print(f"Snippet: {result['body']}")
-            # print("-" * 1)
-            Request_List.append({"title": result['title'], "url": result['href'], "snippet": result['body']})
-            time.sleep(2)
-            urls.append( result["href"] )
+            Request_List.append({
+                "title": result['title'],
+                "url": result['href'],
+                "snippet": result['body']
+            })
+            urls.append(result["href"])
+            time.sleep(1)  # sleep between requests to avoid rate limiting
 
-        urls = list(set(urls))
-        # print(urls)
+    urls = list(set(urls))  # remove duplicates
 
-        # first_url = urls[6]
-        # print("\n\n",first_url)
+    for i, url in enumerate(urls[:8]):
+        try:
+            response = requests.get(url, headers=headers, timeout=10)
+            if response.status_code != 200:
+                print(f"Failed to fetch {url} with status code: {response.status_code}")
+                continue
 
-        
-#         headers = {
-#     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-#     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-#     "Accept-Language": "en-US,en;q=0.5",
-#     "Accept-Encoding": "gzip, deflate, br",
-#     "Connection": "keep-alive",
-#     "Referer": "https://www.google.com/",
-# }
-
-        headers = {
-                "User-Agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36"
-            }
-
-
-        for i,url in enumerate(urls[:8]):
-        
-
-            
-            response = requests.get(url,headers=headers, verify=True )
-            # print(url);
             soup = BeautifulSoup(response.text, "lxml")
-            for script in soup(["script", "style"]):
-                script.extract()
-            
+            for tag in soup(["script", "style"]):
+                tag.decompose()
 
-            content = soup.find_all(["p", "main", "div", "article", "section", "h1", "title","table"]) 
-            
-            
+            content_blocks = soup.find_all(["p", "main", "div", "article", "section", "h1", "title", "table"])
+            for block in content_blocks:
+                text = block.get_text(separator=" ").strip()
+                cleaned = re.sub(r"[^a-zA-Z0-9\s]", "", text)  # remove special characters
+                cleaned = re.sub(r"\s+", " ", cleaned)  # remove extra spaces
+                if cleaned:
+                    scraped.append(cleaned)
 
-            for para in content:
-                hello = (para.get_text(separator=" ").strip())
-                cleaning_data = re.sub(r"[^a-zA-Z0-9\s]", "", hello) # Keep Only Letters and Numbers
-                cleaning_data = re.sub(r"\s+", " ", cleaning_data).strip() # Removed Extra Spaces
-
-                # print("".join(cleaning_data)) 
-                scraped.append(cleaning_data);
-            # print("Scraped Data Successfull")
-            # print(url, "\t\t", i)
             scraped.append(url)
-            pure_scraped = list(set(scraped))
-            # print("\n\n\n Pure Scraped Data: ", pure_scraped)
+        except Exception as e:
+            print(f"Error scraping {url}: {e}")
+        time.sleep(1.5)  # rate limiting
+
+    pure_scraped = list(set(scraped))  # remove duplicates
+
+except Exception as e:
+    print(f"Search or scrape failed: {e}")
+    
+#         for result in results:
+#             # print(f"Title: {result['title']}")
+#             # print(f"URL: {result['href']}")
+#             # print(f"Snippet: {result['body']}")
+#             # print("-" * 1)
+#             Request_List.append({"title": result['title'], "url": result['href'], "snippet": result['body']})
+#             time.sleep(2)
+#             urls.append( result["href"] )
+
+#         urls = list(set(urls))
+#         # print(urls)
+
+#         # first_url = urls[6]
+#         # print("\n\n",first_url)
+
+        
+# #         headers = {
+# #     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+# #     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+# #     "Accept-Language": "en-US,en;q=0.5",
+# #     "Accept-Encoding": "gzip, deflate, br",
+# #     "Connection": "keep-alive",
+# #     "Referer": "https://www.google.com/",
+# # }
+
+#         headers = {
+#                 "User-Agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36"
+#             }
+
+
+#         for i,url in enumerate(urls[:8]):
+        
+
+            
+#             response = requests.get(url,headers=headers, verify=True )
+#             # print(url);
+#             soup = BeautifulSoup(response.text, "lxml")
+#             for script in soup(["script", "style"]):
+#                 script.extract()
+            
+
+#             content = soup.find_all(["p", "main", "div", "article", "section", "h1", "title","table"]) 
+            
+            
+
+#             for para in content:
+#                 hello = (para.get_text(separator=" ").strip())
+#                 cleaning_data = re.sub(r"[^a-zA-Z0-9\s]", "", hello) # Keep Only Letters and Numbers
+#                 cleaning_data = re.sub(r"\s+", " ", cleaning_data).strip() # Removed Extra Spaces
+
+#                 # print("".join(cleaning_data)) 
+#                 scraped.append(cleaning_data);
+#             # print("Scraped Data Successfull")
+#             # print(url, "\t\t", i)
+#             scraped.append(url)
+#             pure_scraped = list(set(scraped))
+#             # print("\n\n\n Pure Scraped Data: ", pure_scraped)
 
             
 
