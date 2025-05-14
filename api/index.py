@@ -44,59 +44,58 @@ def search():
         # # Perform a text search
         #     results = ddgs.text(query, region="wt-wt", safesearch="moderate", timelimit="y")
 
-
+    Request_List = []
+                urls = []
+                images = []
+                scraped = []
+                pure_scraped = []
 
            
     # Print results
 
-    with DDGS() as ddgs:
-        results = ddgs.text(query, region="wt-wt", safesearch="moderate", timelimit="y")
-
-         Request_List = []
-            urls = []
-            images = []
-            scraped = []
-            pure_scraped = []
-        
-        for result in results:
-            Request_List.append({
-                "title": result['title'],
-                "url": result['href'],
-                "snippet": result['body']
-            })
-            urls.append(result["href"])
-            time.sleep(1)  # sleep between requests to avoid rate limiting
-
-    urls = list(set(urls))  # remove duplicates
-
-    for i, url in enumerate(urls[:8]):
-        try:
-            response = requests.get(url, headers=headers, timeout=10)
-            if response.status_code != 200:
-                print(f"Failed to fetch {url} with status code: {response.status_code}")
-                continue
-
-            soup = BeautifulSoup(response.text, "lxml")
-            for tag in soup(["script", "style"]):
-                tag.decompose()
-
-            content_blocks = soup.find_all(["p", "main", "div", "article", "section", "h1", "title", "table"])
-            for block in content_blocks:
-                text = block.get_text(separator=" ").strip()
-                cleaned = re.sub(r"[^a-zA-Z0-9\s]", "", text)  # remove special characters
-                cleaned = re.sub(r"\s+", " ", cleaned)  # remove extra spaces
-                if cleaned:
-                    scraped.append(cleaned)
-
-            scraped.append(url)
-        except Exception as e:
-            print(f"Error scraping {url}: {e}")
-        time.sleep(1.5)  # rate limiting
-
-    pure_scraped = list(set(scraped))  # remove duplicates
-
-except Exception as e:
-    print(f"Search or scrape failed: {e}")
+    try:
+        with DDGS() as ddgs:
+            results = ddgs.text(query, region="wt-wt", safesearch="moderate", timelimit="y")
+    
+            for result in results:
+                Request_List.append({
+                    "title": result['title'],
+                    "url": result['href'],
+                    "snippet": result['body']
+                })
+                urls.append(result["href"])
+                time.sleep(1)  # sleep between requests to avoid rate limiting
+    
+        urls = list(set(urls))  # remove duplicates
+    
+        for i, url in enumerate(urls[:8]):
+            try:
+                response = requests.get(url, headers=headers, timeout=10)
+                if response.status_code != 200:
+                    print(f"Failed to fetch {url} with status code: {response.status_code}")
+                    continue
+    
+                soup = BeautifulSoup(response.text, "lxml")
+                for tag in soup(["script", "style"]):
+                    tag.decompose()
+    
+                content_blocks = soup.find_all(["p", "main", "div", "article", "section", "h1", "title", "table"])
+                for block in content_blocks:
+                    text = block.get_text(separator=" ").strip()
+                    cleaned = re.sub(r"[^a-zA-Z0-9\s]", "", text)  # remove special characters
+                    cleaned = re.sub(r"\s+", " ", cleaned)  # remove extra spaces
+                    if cleaned:
+                        scraped.append(cleaned)
+    
+                scraped.append(url)
+            except Exception as e:
+                print(f"Error scraping {url}: {e}")
+            time.sleep(1.5)  # rate limiting
+    
+        pure_scraped = list(set(scraped))  # remove duplicates
+    
+    except Exception as e:
+        print(f"Search or scrape failed: {e}")
     
 #         for result in results:
 #             # print(f"Title: {result['title']}")
