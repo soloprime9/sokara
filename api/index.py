@@ -172,28 +172,44 @@ def search():
             
 
 
-            og_image = soup.find("meta", property="og:image")
-            if og_image and og_image.get("content"):
-                images.append(og_image["content"])
+            try:
+        response = requests.get(url, headers=headers, timeout=10)
+        if response.status_code != 200:
+            print(f"Failed to fetch {url}, status code: {response.status_code}")
+            return []
 
-            # ✅ 2. Try to get Twitter Image (if no og:image)
-            twitter_image = soup.find("meta", property="twitter:image")
-            if twitter_image and twitter_image.get("content"):
-                images.append(twitter_image["content"])
+        soup = BeautifulSoup(response.text, "lxml")
+        images = []
 
-            # ✅ 3. Try to get <link rel="image_src">
-            image_src = soup.find("link", rel="image_src")
-            if image_src and image_src.get("href"):
-                images.append(image_src["href"])
+        # ✅ 1. og:image
+        og_image = soup.find("meta", property="og:image")
+        if og_image and og_image.get("content"):
+            images.append(urljoin(url, og_image["content"]))
 
-            # ✅ 4. Try to find first <img> tag on the page (fallback)
-            if not images:  # Only if images list is empty
-                first_img = soup.find("img")
-                if first_img and first_img.get("src"):
-                    images.append(first_img["src"])
-        
+        # ✅ 2. twitter:image
+        twitter_image = soup.find("meta", property="twitter:image")
+        if twitter_image and twitter_image.get("content"):
+            images.append(urljoin(url, twitter_image["content"]))
+
+        # ✅ 3. link rel="image_src"
+        image_src = soup.find("link", rel="image_src")
+        if image_src and image_src.get("href"):
+            images.append(urljoin(url, image_src["href"]))
+
+        # ✅ 4. All <img> tags
+        img_tags = soup.find_all("img")
+        for img in img_tags:
+            img_src = img.get("src")
+            if img_src:
+                images.append(urljoin(url, img_src))
+
+        # ✅ Remove duplicates
         images = list(set(images))
-        # print(images)
+        return images
+
+    except Exception as e:
+        print(f"Error scraping images from {url}: {e}")
+        return []
         
                 
             
