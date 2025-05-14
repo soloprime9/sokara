@@ -58,7 +58,7 @@ def search():
             # print(f"Snippet: {result['body']}")
             # print("-" * 1)
             Request_List.append({"title": result['title'], "url": result['href'], "snippet": result['body']})
-        
+            time.sleep(2)
             urls.append( result["href"] )
 
         urls = list(set(urls))
