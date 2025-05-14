@@ -44,19 +44,19 @@ def search():
         # # Perform a text search
         #     results = ddgs.text(query, region="wt-wt", safesearch="moderate", timelimit="y")
 
-    Request_List = []
-                urls = []
-                images = []
-                scraped = []
-                pure_scraped = []
-
+    
            
     # Print results
 
     try:
         with DDGS() as ddgs:
             results = ddgs.text(query, region="wt-wt", safesearch="moderate", timelimit="y")
-    
+             Request_List = []
+             urls = []
+             images = []
+             scraped = []
+             pure_scraped = []
+
             for result in results:
                 Request_List.append({
                     "title": result['title'],
