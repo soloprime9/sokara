@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 CORS(app, origins=["https://www.fondpeace.com"])
 
-client = genai.Client(api_key="AIzaSyDwduC5DYRNBlGCwbTofvPfXUHSl3gORZY")
+# client = genai.Client(api_key="AIzaSyDwduC5DYRNBlGCwbTofvPfXUHSl3gORZY")
 
 
 
@@ -23,15 +23,15 @@ client = genai.Client(api_key="AIzaSyDwduC5DYRNBlGCwbTofvPfXUHSl3gORZY")
 
 
 def search():
-        # Initialize DDGS
-        query = request.args.get('q')
-        # print("This is query dear : ", query)
+        # # Initialize DDGS
+        # query = request.args.get('q')
+        # # print("This is query dear : ", query)
 
-        # QueryQuestions = client.models.generate_content(
-        #      model= 'gemini-2.0-flash',
-        #      contents=f"Generate exactly 10 short questions about {query} in JSON format. "
-        #      "Output example: {{'questions': ['What is X?', 'How does X work?', ...]}}"
-        # )
+        # # QueryQuestions = client.models.generate_content(
+        # #      model= 'gemini-2.0-flash',
+        # #      contents=f"Generate exactly 10 short questions about {query} in JSON format. "
+        # #      "Output example: {{'questions': ['What is X?', 'How does X work?', ...]}}"
+        # # )
            
              
 
@@ -48,14 +48,21 @@ def search():
            
     # Print results
 
+    query = request.args.get('q')
+    if not query:
+        return jsonify({"error": "Missing query parameter"}), 400
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36"
+    }
+
+    Request_List = []
+    urls = []
+    scraped = []
+
     try:
         with DDGS() as ddgs:
             results = ddgs.text(query, region="wt-wt", safesearch="moderate", timelimit="y")
-             Request_List = []
-             urls = []
-             images = []
-             scraped = []
-             pure_scraped = []
 
             for result in results:
                 Request_List.append({
@@ -64,38 +71,45 @@ def search():
                     "snippet": result['body']
                 })
                 urls.append(result["href"])
-                time.sleep(1)  # sleep between requests to avoid rate limiting
-    
-        urls = list(set(urls))  # remove duplicates
-    
-        for i, url in enumerate(urls[:8]):
+                time.sleep(1)
+
+        urls = list(set(urls))  # Remove duplicate URLs
+
+        for i, url in enumerate(urls[:8]):  # Limit scraping to first 8 results
             try:
                 response = requests.get(url, headers=headers, timeout=10)
                 if response.status_code != 200:
                     print(f"Failed to fetch {url} with status code: {response.status_code}")
                     continue
-    
+
                 soup = BeautifulSoup(response.text, "lxml")
                 for tag in soup(["script", "style"]):
                     tag.decompose()
-    
+
                 content_blocks = soup.find_all(["p", "main", "div", "article", "section", "h1", "title", "table"])
                 for block in content_blocks:
                     text = block.get_text(separator=" ").strip()
-                    cleaned = re.sub(r"[^a-zA-Z0-9\s]", "", text)  # remove special characters
-                    cleaned = re.sub(r"\s+", " ", cleaned)  # remove extra spaces
+                    cleaned = re.sub(r"[^a-zA-Z0-9\s]", "", text)
+                    cleaned = re.sub(r"\s+", " ", cleaned)
                     if cleaned:
                         scraped.append(cleaned)
-    
-                scraped.append(url)
+
+                scraped.append(f"URL: {url}")
+
             except Exception as e:
                 print(f"Error scraping {url}: {e}")
-            time.sleep(1.5)  # rate limiting
-    
-        pure_scraped = list(set(scraped))  # remove duplicates
-    
+            time.sleep(1.5)  # Delay to avoid being blocked
+
+        pure_scraped = list(set(scraped))
+
+        return jsonify({
+            "query": query,
+            "search_results": Request_List,
+            "scraped_data": pure_scraped[:100]  # Limit output size
+        })
+
     except Exception as e:
-        print(f"Search or scrape failed: {e}")
+        return jsonify({"error": str(e)}), 500
     
 #         for result in results:
 #             # print(f"Title: {result['title']}")
